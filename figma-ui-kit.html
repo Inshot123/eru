@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ERU Design System &amp; Figma UI Kit</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Figma Artboard Presentation Wrapper */
+    body {
+      padding: 48px;
+      background: #040812;
+      width: 3400px;
+    }
+    .kit-title {
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .kit-title h1 {
+      margin: 0;
+      font-size: 36px;
+      letter-spacing: -0.5px;
+    }
+    .artboard-row {
+      display: flex;
+      gap: 48px;
+      align-items: flex-start;
+      margin-bottom: 64px;
+    }
+    .artboard {
+      background: var(--bg);
+      border: 1px solid rgba(130, 160, 230, 0.25);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+      position: relative;
+    }
+    .artboard-label {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--mut);
+      margin-bottom: 12px;
+      display: block;
+    }
+    .swatch-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+    .swatch {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+    }
+    .swatch-color {
+      height: 54px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .swatch b { display: block; font-size: 13px; margin-bottom: 2px; }
+    .swatch small { font-size: 11px; font-family: monospace; }
+    .comp-group {
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--line);
+    }
+    .comp-group:last-child { border-bottom: 0; margin-bottom: 0; }
+    .mock-map {
+      height: 220px;
+      border-radius: 14px;
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      background:
+        radial-gradient(circle at 55% 48%, rgba(59,130,246,0.22) 0, rgba(59,130,246,0.22) 48px, transparent 49px),
+        linear-gradient(rgba(130,160,230,0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(130,160,230,0.08) 1px, transparent 1px),
+        #0d1830;
+      background-size: 100% 100%, 28px 28px, 28px 28px, 100% 100%;
+      display: grid;
+      place-items: center;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="kit-title">
+    <div>
+      <h1>ERU — Emergency Response Unit UI Kit</h1>
+      <small>Mandaue · Liloan · Consolacion — Design Tokens, Components &amp; Full Screens</small>
+    </div>
+    <div class="badges">
+      <span class="badge">Theme: Dark Navy Glassmorphism</span>
+      <span class="badge">Font: Segoe UI / Inter</span>
+      <span class="badge">Radius: 18px</span>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       ROW 1: DESIGN TOKENS & ATOMIC COMPONENTS
+       =================================================================== -->
+  <div class="artboard-row">
+
+    <!-- 1. COLOR TOKENS & TYPOGRAPHY -->
+    <div>
+      <span class="artboard-label">01 · Color Tokens &amp; Typography</span>
+      <div class="artboard" style="width: 760px; padding: 28px;">
+        <div class="comp-group">
+          <h3>Color Palette</h3>
+          <div class="swatch-grid">
+            <div class="swatch"><div class="swatch-color" style="background:#070d1a"></div><b>Canvas BG</b><small>#070D1A</small></div>
+            <div class="swatch"><div class="swatch-color" style="background:rgba(20,30,56,.72)"></div><b>Panel Primary</b><small>rgba(20,30,56,.72)</small></div>
+            <div class="swatch"><div class="swatch-color" style="background:rgba(34,48,86,.6)"></div><b>Panel Secondary</b><small>rgba(34,48,86,.60)</small></div>
+            <div class="swatch"><div class="swatch-color" style="background:linear-gradient(135deg,#3b82f6,#8b5cf6)"></div><b>Primary Gradient</b><small>#3B82F6 → #8B5CF6</small></div>
+            <div class="swatch"><div class="swatch-color" style="background:linear-gradient(135deg,#ff4757,#e11d48)"></div><b>Emergency Accent</b><small>#FF4757 → #E11D48</small></div>
+            <div class="swatch"><div class="swatch-color" style="background:#22c55e"></div><b>Status Available</b><small>#22C55E</small></div>
+            <div class="swatch"><div class="swatch-color" style="background:#f59e0b"></div><b>Status Pending</b><small>#F59E0B</small></div>
+            <div class="swatch"><div class="swatch-color" style="background:#eaf0ff"></div><b>Text Primary</b><small>#EAF0FF</small></div>
+          </div>
+        </div>
+
+        <div class="comp-group">
+          <h3>Typography Scale</h3>
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <div><small>Hero Heading · 30px Bold</small><div style="font-size:30px; font-weight:700;">Need help? Report in seconds.</div></div>
+            <div><small>Admin Page Title · 24px Bold</small><div style="font-size:24px; font-weight:700;">Incident Requests</div></div>
+            <div><small>Card Heading · 19px Bold</small><div style="font-size:19px; font-weight:700;">Emergency / Crime Report Form</div></div>
+            <div><small>Body &amp; Chat · 14px Regular</small><div style="font-size:14px;">Tell us what is happening and where. Our team sends the right responders.</div></div>
+            <div><small>Form Label &amp; Table Header · 11.5px Uppercase</small><label style="margin:0;">REPORTER NAME · MOBILE NUMBER</label></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. BUTTONS, BADGES, PILLS & FORM INPUTS -->
+    <div>
+      <span class="artboard-label">02 · UI Components (Buttons, Badges, Forms)</span>
+      <div class="artboard" style="width: 820px; padding: 28px;">
+        <div class="comp-group">
+          <h3>Buttons &amp; Navigation Tabs</h3>
+          <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
+            <button class="btn">Primary Action</button>
+            <button class="btn red">🚨 Emergency / Quick Send</button>
+            <button class="btn ok">Resolve Incident</button>
+            <button class="btn ghost">📍 Ghost / GPS</button>
+            <button class="btn sm">Small Button</button>
+            <div class="tabs">
+              <button class="tab on">🚑 Active Tab</button>
+              <button class="tab">📋 Inactive Tab</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="comp-group">
+          <h3>Status Pills, Badges &amp; Alerts</h3>
+          <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:14px;">
+            <span class="badge"><i class="dot"></i> Dispatch online</span>
+            <span class="badge">📞 Emergency: <b>911</b></span>
+            <span class="pill pending">pending</span>
+            <span class="pill assigned">assigned</span>
+            <span class="pill resolved">resolved</span>
+            <span class="pill dispatched">dispatched</span>
+            <span class="chip">Mandaue City: Fire Unit 1</span>
+          </div>
+          <div class="msg good" style="margin-top:0;">Report sent! Reference ERU-A94F12 (A. Del Rosario St, Mandaue City).</div>
+          <div class="msg err">Mobile number must be exactly 11 digits.</div>
+        </div>
+
+        <div class="comp-group">
+          <h3>Incident Type Selector Cards</h3>
+          <div class="types" style="margin-bottom:0;">
+            <button type="button" class="tcard on"><span>🔥</span>Fire</button>
+            <button type="button" class="tcard"><span>🚨</span>Crime</button>
+            <button type="button" class="tcard"><span>🚑</span>Medical Emergency</button>
+            <button type="button" class="tcard"><span>🚗</span>Traffic Accident</button>
+            <button type="button" class="tcard"><span>🌊</span>Flood / Disaster</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. ADMIN LOGIN SCREEN -->
+    <div>
+      <span class="artboard-label">03 · Screen: Admin Login (430px)</span>
+      <div class="artboard" style="width: 520px; padding: 44px; display:grid; place-items:center;">
+        <section class="login card" style="width:100%;">
+          <div class="brand" style="margin-bottom:12px;">
+            <img class="logo" src="img/logo.png" alt="Logo">
+            <div>ERU Admin Console<br><small>Authorized personnel only</small></div>
+          </div>
+          <label>Username</label>
+          <input value="Ak-47" readonly>
+          <label>Password</label>
+          <input type="password" value="••••••••" readonly>
+          <div style="margin-top:18px;">
+            <button class="btn big">Sign in</button>
+          </div>
+          <p style="margin-bottom:0;"><span class="mut">← Back to public report page</span></p>
+        </section>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===================================================================
+       ROW 2: FULL DESKTOP SCREENS (CITIZEN PORTAL & ADMIN DASHBOARD)
+       =================================================================== -->
+  <div class="artboard-row">
+
+    <!-- 4. CITIZEN PORTAL SCREEN -->
+    <div>
+      <span class="artboard-label">04 · Screen: Citizen Reporting Portal (1440px)</span>
+      <div class="artboard" style="width: 1440px;">
+        <header class="hdr" style="position:static;">
+          <div class="brand">
+            <img class="logo" src="img/logo.png" alt="Logo">
+            <div>Emergency Response Unit<br><small>Mandaue · Liloan · Consolacion</small></div>
+          </div>
+          <nav class="tabs">
+            <button class="tab on">🚑 Report Incident</button>
+            <button class="tab">📋 My Reports</button>
+          </nav>
+          <div class="sos">
+            <span class="badge"><i class="dot"></i> Dispatch online</span>
+            <span class="badge">📞 Emergency: <b>911</b></span>
+          </div>
+        </header>
+
+        <main>
+          <div class="grid">
+            <div>
+              <div class="hero">
+                <h1>Need help? Report in seconds.</h1>
+                <p>Tell us what is happening and where. Our team sends the right responders — fire, police, ambulance or rescue — to your exact location.</p>
+                <div class="badges">
+                  <span class="badge">⚡ Quick Send with live GPS</span>
+                  <span class="badge">🏙️ 3 cities covered</span>
+                  <span class="badge">🕒 24/7 monitoring</span>
+                </div>
+              </div>
+
+              <div class="types">
+                <button type="button" class="tcard on"><span>🔥</span>Fire</button>
+                <button type="button" class="tcard"><span>🚨</span>Crime</button>
+                <button type="button" class="tcard"><span>🚑</span>Medical Emergency</button>
+                <button type="button" class="tcard"><span>🚗</span>Traffic Accident</button>
+                <button type="button" class="tcard"><span>🌊</span>Flood / Disaster</button>
+              </div>
+
+              <div class="card">
+                <h2>Emergency / Crime Report Form</h2>
+                <div class="step"><span class="n">1</span>Your details</div>
+                <div class="fgrid">
+                  <div><label>Reporter name</label><input value="Juan Dela Cruz" readonly></div>
+                  <div><label>Mobile number (11 digits)</label><input value="09171234567" readonly></div>
+                </div>
+                <div class="step"><span class="n">2</span>What happened?</div>
+                <label>Incident type</label><select><option>Fire</option></select>
+                <div class="step"><span class="n">3</span>Where are you?</div>
+                <label>Street / landmark / address (auto-filled)</label>
+                <input value="A. Del Rosario Street, Centro, Mandaue City" readonly>
+                <div class="row" style="margin-top:12px;">
+                  <button class="btn ghost">📍 Use my live location</button>
+                  <button class="btn red">⚡ Quick Send</button>
+                </div>
+                <small class="mut" style="display:block;margin-top:8px;">📍 10.32360, 123.92230 · GPS ±12 m — A. Del Rosario Street, Centro, Mandaue City</small>
+                <div class="mock-map">
+                  <span style="font-size:34px;">📍</span>
+                </div>
+                <div style="margin-top:18px;">
+                  <button class="btn red big">🚨 Send Report</button>
+                </div>
+              </div>
+            </div>
+
+            <aside class="card chat" style="position:static; height:780px;">
+              <div class="chead">
+                <div class="av">🤖</div>
+                <div><b>ERU Assistant</b><br><small><i class="dot"></i> Online · emergency help only</small></div>
+              </div>
+              <div class="log">
+                <div class="b bot">Hi! I am the ERU Assistant. Ask me what to do in an emergency or how to use this system.</div>
+                <div class="b me">Fire safety</div>
+                <div class="b bot">FIRE: 1) Get everyone out and stay low under smoke. 2) Do not use elevators. 3) Never go back inside. 4) Submit a Fire report here or call 911.</div>
+              </div>
+              <div class="sugs">
+                <button class="sug">🔥 Fire safety</button>
+                <button class="sug">🩸 Someone is bleeding</button>
+                <button class="sug">📍 How do I report?</button>
+                <button class="sug">🌊 Flood help</button>
+              </div>
+              <form><div class="row"><input placeholder="Ask what to do..."><button class="btn">Send</button></div></form>
+            </aside>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- 5. ADMIN CONSOLE SCREEN (REQUESTS + RESPONDERS) -->
+    <div>
+      <span class="artboard-label">05 · Screen: Admin Command &amp; Dispatch Console (1560px)</span>
+      <div class="artboard" style="width: 1560px;">
+        <div class="shell" style="min-height:920px;">
+          <aside class="side" style="position:static; height:auto;">
+            <div class="brand">
+              <img class="logo" src="img/logo.png" alt="Logo">
+              <div>ERU Admin<br><small>Command &amp; Dispatch</small></div>
+            </div>
+            <div class="cap">Navigation</div>
+            <button class="tab on">📨 Requests</button>
+            <button class="tab">🚒 Responders</button>
+            <button class="tab">📅 Monthly Report</button>
+            <button class="tab">📊 Yearly Scale</button>
+            <div class="me">
+              <small>Signed in as <b>Administrator</b></small>
+              <button class="btn red sm">Logout</button>
+            </div>
+          </aside>
+
+          <div>
+            <div class="top">
+              <h1>Incident Requests &amp; Unit Status</h1>
+              <span class="badge">Thursday, November 12, 2026 at 9:00 AM</span>
+            </div>
+
+            <main>
+              <div class="stats">
+                <div class="stat"><b>24</b>Total</div>
+                <div class="stat"><b>3</b>Pending</div>
+                <div class="stat"><b>4</b>Assigned</div>
+                <div class="stat"><b>17</b>Resolved</div>
+              </div>
+
+              <div class="card tbl" style="margin-bottom:24px;">
+                <h2>Incident Requests</h2>
+                <table>
+                  <tr><th>Ref / Time</th><th>Reporter</th><th>Type</th><th>Location</th><th>Status</th><th>Action</th></tr>
+                  <tr>
+                    <td>ERU-8F21A0<br><small>Nov 12, 2026 08:54 AM</small></td>
+                    <td>Maria Santos<br><small>09171234567</small></td>
+                    <td>Fire<br><small>Electrical post sparks near market</small></td>
+                    <td>A. Del Rosario St, Centro<br><small>10.3236, 123.9223 · Mandaue City</small></td>
+                    <td><span class="pill pending">pending</span></td>
+                    <td><button class="btn sm">Assign</button></td>
+                  </tr>
+                  <tr>
+                    <td>ERU-4C90B1<br><small>Nov 12, 2026 08:30 AM</small></td>
+                    <td>Carlo Reyes<br><small>09189876543</small></td>
+                    <td>Traffic Accident<br><small>Two-motorcycle collision</small></td>
+                    <td>Cebu North Rd, Poblacion<br><small>10.3992, 123.9983 · Liloan</small></td>
+                    <td><span class="pill assigned">assigned</span><br><span class="chip">Liloan: Police Unit 1</span></td>
+                    <td><button class="btn sm">Assign</button> <button class="btn ok sm">Resolve</button></td>
+                  </tr>
+                </table>
+              </div>
+
+              <!-- Station Availability Cards Preview -->
+              <div class="units">
+                <div class="card st">
+                  <div class="sth">
+                    <div class="ring" style="--p:75;--c:var(--ok);"><b>75%</b></div>
+                    <div>
+                      <h3>Mandaue Central Response Station</h3>
+                      <small>📍 Mandaue City · 6/8 available</small>
+                    </div>
+                  </div>
+                  <div class="ugrp">
+                    <div class="ut">🔥 Fire &amp; Medical</div>
+                    <div class="ulist">
+                      <div class="unit available"><span class="ud"></span><div><b>Unit 1</b><small>Ready</small></div></div>
+                      <div class="unit dispatched"><span class="ud"></span><div><b>Unit 2</b><small>On duty · ERU-4C90B1</small></div></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="card st">
+                  <div class="sth">
+                    <div class="ring" style="--p:88;--c:var(--ok);"><b>88%</b></div>
+                    <div>
+                      <h3>Liloan Response Station</h3>
+                      <small>📍 Liloan · 7/8 available</small>
+                    </div>
+                  </div>
+                  <div class="ugrp">
+                    <div class="ut">🚓 Police &amp; Rescue</div>
+                    <div class="ulist">
+                      <div class="unit dispatched"><span class="ud"></span><div><b>Unit 1</b><small>On duty · ERU-4C90B1</small></div></div>
+                      <div class="unit available"><span class="ud"></span><div><b>Unit 2</b><small>Ready</small></div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </main>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

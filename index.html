@@ -1,0 +1,42 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://unpkg.com; style-src 'self' 'unsafe-inline' https://unpkg.com; img-src 'self' data: https://*.tile.openstreetmap.org https://server.arcgisonline.com https://unpkg.com; connect-src 'self' https://nominatim.openstreetmap.org; frame-ancestors 'none'; base-uri 'none'; form-action 'none'">
+<title>Emergency Response Unit - Report</title><link rel="icon" type="image/png" href="img/favicon.png"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><link rel="stylesheet" href="css/style.css"></head><body>
+<header class="hdr"><div class="brand"><img class="logo" src="img/logo.png" alt="Emergency Response Unit logo"><div>Emergency Response Unit<br><small>Mandaue · Liloan · Consolacion</small></div></div>
+<nav class="tabs"><button class="tab on" data-t="report">🚑 Report Incident</button><button class="tab" data-t="mine">📋 My Reports</button></nav>
+<div class="sos"><span class="badge"><i class="dot"></i> Dispatch online</span><span class="badge">📞 Emergency: <b>911</b></span></div></header>
+<main><div class="grid"><div>
+<section id="report" class="sec">
+ <div class="hero"><h1>Need help? Report in seconds.</h1><p>Tell us what is happening and where. Our team sends the right responders — fire, police, ambulance or rescue — to your exact location.</p>
+  <div class="badges"><span class="badge">⚡ Quick Send with live GPS</span><span class="badge">🏙️ 3 cities covered</span><span class="badge">🕒 24/7 monitoring</span></div></div>
+ <div class="types" id="types"></div>
+ <div class="card"><h2>Emergency / Crime Report Form</h2>
+  <div class="step"><span class="n">1</span>Your details</div>
+  <div class="fgrid"><div><label for="name">Reporter name</label><input id="name" maxlength="60" autocomplete="name" placeholder="Full name"></div>
+  <div><label for="phone">Mobile number (11 digits)</label><input id="phone" maxlength="11" inputmode="numeric" placeholder="09XXXXXXXXX"></div></div>
+  <div class="step"><span class="n">2</span>What happened?</div>
+  <label for="type">Incident type</label><select id="type"></select>
+  <label for="desc">Details (optional)</label><textarea id="desc" rows="2" maxlength="300" placeholder="Briefly describe the situation"></textarea>
+  <div class="step"><span class="n">3</span>Where are you?</div>
+  <label for="addr">Street / landmark / address (auto-filled from pin or GPS)</label><input id="addr" maxlength="120" placeholder="Tap map or use live location to detect exact street...">
+  <div class="row" style="margin-top:12px"><button class="btn ghost" id="loc" type="button">📍 Use my live location</button><button class="btn red" id="quick" type="button">⚡ Quick Send</button></div>
+  <small class="mut" id="coords" style="display:block;margin-top:8px">No location yet. Tap the map or drag the pin to set the exact spot.</small><div id="map"></div>
+  <div style="margin-top:18px"><button class="btn red big" id="send" type="button">🚨 Send Report</button></div><div id="out"></div></div>
+</section>
+<section id="mine" class="sec card hide"><h2>My Reports (this device)</h2><div class="tbl" id="mineBody"></div></section></div>
+<aside class="card chat"><div class="chead"><div class="av">🤖</div><div><b>ERU Assistant</b><br><small><i class="dot"></i> Online · emergency help only</small></div></div>
+<div class="log" id="log"></div>
+<div class="sugs"><button class="sug" type="button">🔥 Fire safety</button><button class="sug" type="button">🩸 Someone is bleeding</button><button class="sug" type="button">📍 How do I report?</button><button class="sug" type="button">🌊 Flood help</button></div>
+<form id="chatForm"><div class="row"><input id="chatIn" maxlength="300" placeholder="Ask what to do..."><button class="btn">Send</button></div></form></aside></div></main>
+<div class="foot">© Emergency Response Unit · For life-threatening emergencies also dial 911</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- shared -->
+<script src="js/shared/config.js"></script>
+<script src="js/shared/store.js"></script>
+<!-- citizen page (main.js must stay last) -->
+<script src="js/citizen/chatbot.js"></script>
+<script src="js/citizen/ui.js"></script>
+<script src="js/citizen/map.js"></script>
+<script src="js/citizen/myreports.js"></script>
+<script src="js/citizen/form.js"></script>
+<script src="js/citizen/main.js"></script>
+</body></html>
