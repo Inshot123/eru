@@ -6,7 +6,7 @@
      ERU.esc()     escapes text before putting it in HTML (security)
      initTabs()    tab switching (citizen top tabs / admin sidebar)
    ===================================================================== */
-const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
+const SUPABASE_URL = 'https://xyufphigdtpuksijwww.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_UVAjz127wAxrtQ0v0dzxdg_e-n6apkf';
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
