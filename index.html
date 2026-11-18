@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://unpkg.com; style-src 'self' 'unsafe-inline' https://unpkg.com; img-src 'self' data: https://*.tile.openstreetmap.org https://server.arcgisonline.com https://unpkg.com; connect-src 'self' https://nominatim.openstreetmap.org; frame-ancestors 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://unpkg.com; img-src 'self' data: https://*.tile.openstreetmap.org https://server.arcgisonline.com https://unpkg.com; connect-src 'self' https://nominatim.openstreetmap.org https://*.supabase.co; frame-ancestors 'none'; base-uri 'none'; form-action 'none'">
 <title>Emergency Response Unit - Report</title><link rel="icon" type="image/png" href="img/favicon.png"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><link rel="stylesheet" href="css/style.css"></head><body>
 <header class="hdr"><div class="brand"><img class="logo" src="img/logo.png" alt="Emergency Response Unit logo"><div>Emergency Response Unit<br><small>Mandaue · Liloan · Consolacion</small></div></div>
 <nav class="tabs"><button class="tab on" data-t="report">🚑 Report Incident</button><button class="tab" data-t="mine">📋 My Reports</button></nav>
@@ -29,6 +29,7 @@
 <form id="chatForm"><div class="row"><input id="chatIn" maxlength="300" placeholder="Ask what to do..."><button class="btn">Send</button></div></form></aside></div></main>
 <div class="foot">© Emergency Response Unit · For life-threatening emergencies also dial 911</div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <!-- shared -->
 <script src="js/shared/config.js"></script>
 <script src="js/shared/store.js"></script>
