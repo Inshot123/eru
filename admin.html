@@ -1,6 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://*.supabase.co; frame-ancestors 'none'; base-uri 'none'; form-action 'none'">
-<title>ERU Admin</title><link rel="icon" type="image/png" href="img/favicon.png"><link rel="stylesheet" href="css/style.css"></head><body>
+<meta name="theme-color" content="#070d1a">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://*.supabase.co https://cdn.jsdelivr.net; worker-src 'self'; manifest-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'">
+<title>ERU Admin</title><link rel="manifest" href="manifest.json"><link rel="icon" type="image/png" href="img/favicon.png"><link rel="stylesheet" href="css/style.css"></head><body>
 <div class="loginwrap" id="loginView"><section class="login card"><div class="brand" style="margin-bottom:6px"><img class="logo" src="img/logo.png" alt="Emergency Response Unit logo"><div>ERU Admin Console<br><small>Authorized personnel only</small></div></div>
 <form id="lf" autocomplete="off"><label for="u">Username</label><input id="u" maxlength="30" required><label for="p">Password</label><input id="p" type="password" maxlength="60" required>
 <div style="margin-top:18px"><button class="btn big">Sign in</button></div></form><div id="lerr"></div><p><a href="index.html" class="mut">← Back to public report page</a></p></section></div>
