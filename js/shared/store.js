@@ -1,10 +1,6 @@
 'use strict';
 /* =====================================================================
-   SHARED HELPERS  (used by both the citizen page and the admin page)
-     $ / $$        short DOM selectors
-     ERU.api()     talks to Supabase (replaces api/*.php)
-     ERU.esc()     escapes text before putting it in HTML (security)
-     initTabs()    tab switching (citizen top tabs / admin sidebar)
+   SHARED HELPERS  (Online Supabase + Offline Outbox & Cache Support)
    ===================================================================== */
 const SUPABASE_URL = 'https://xyufphigdtpupksijwww.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5dWZwaGlnZHRwdXBrc2lqd3d3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUwMjgwOTYsImV4cCI6MjExMDYwNDA5Nn0.cvMlGQTf6g2lNcczd2mAVTmmbpz-ihAD5wNycmLkomo';
@@ -17,26 +13,88 @@ function httpErr(message, status = 400) {
   return Object.assign(new Error(message), { status });
 }
 
-const ERU = {
-  cache: { inc: [], st: [] },   // admin data loaded from the database
+/* Fallback stations so nearest-station detection works even when offline */
+const DEFAULT_STATIONS = [
+  { id: 'mnd', city: 'Mandaue City', name: 'Mandaue Central Response Station', lat: 10.323600, lng: 123.922300 },
+  { id: 'lil', city: 'Liloan', name: 'Liloan Response Station', lat: 10.399200, lng: 123.998300 },
+  { id: 'con', city: 'Consolacion', name: 'Consolacion Response Station', lat: 10.376700, lng: 123.956400 },
+];
 
-  /* ---------- Backend (Supabase Adapter) ---------- */
+const OUTBOX_KEY = 'eru_offline_outbox';
+const ADMIN_CACHE_KEY = 'eru_admin_cache';
+
+const ERU = {
+  cache: { inc: [], st: [] },
+
+  nearestCity(lat, lng, stations = DEFAULT_STATIONS) {
+    let best = 'Unknown';
+    let bd = 1e9;
+    (stations || DEFAULT_STATIONS).forEach((st) => {
+      const km = this.dist(lat, lng, Number(st.lat), Number(st.lng));
+      if (km < bd) { bd = km; best = st.city; }
+    });
+    return best;
+  },
+
+  genRef() {
+    const bytes = new Uint8Array(3);
+    crypto.getRandomValues(bytes);
+    const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+    return 'ERU-' + hex;
+  },
+
+  getOutbox() {
+    try { return JSON.parse(localStorage.getItem(OUTBOX_KEY) || '[]'); } catch { return []; }
+  },
+
+  saveOutbox(list) {
+    localStorage.setItem(OUTBOX_KEY, JSON.stringify(list));
+  },
+
+  /* Sync queued offline reports automatically when internet returns */
+  async syncOutbox() {
+    if (!navigator.onLine) return;
+    const queue = this.getOutbox();
+    if (!queue.length) return;
+
+    const remaining = [];
+    for (const item of queue) {
+      try {
+        const { error } = await sb.from('incidents').insert([item.row]);
+        if (error) remaining.push(item);
+      } catch {
+        remaining.push(item);
+      }
+    }
+    this.saveOutbox(remaining);
+    if (remaining.length < queue.length && typeof MyReports !== 'undefined') {
+      MyReports.render();
+    }
+  },
+
+  /* ---------- Backend (Supabase + Offline Fallback) ---------- */
   async api(file, body = {}) {
     const a = body.a || '';
 
     /* ================= PUBLIC / CITIZEN ACTIONS ================= */
     if (file === 'report') {
       if (a === 'stations') {
-        const { data, error } = await sb.from('stations').select('name,city,lat,lng');
-        if (error) throw httpErr(error.message, 500);
-        return {
-          items: (data || []).map((r) => ({
-            name: r.name,
-            city: r.city,
-            lat: Number(r.lat),
-            lng: Number(r.lng),
-          })),
-        };
+        try {
+          const { data, error } = await sb.from('stations').select('name,city,lat,lng');
+          if (error) throw error;
+          const items = (data || []).map((r) => ({
+            name: r.name, city: r.city, lat: Number(r.lat), lng: Number(r.lng),
+          }));
+          localStorage.setItem('eru_stations_cache', JSON.stringify(items));
+          return { items };
+        } catch {
+          try {
+            const cached = JSON.parse(localStorage.getItem('eru_stations_cache') || 'null');
+            return { items: cached || DEFAULT_STATIONS };
+          } catch {
+            return { items: DEFAULT_STATIONS };
+          }
+        }
       }
 
       if (a === 'submit') {
@@ -53,24 +111,9 @@ const ERU = {
           throw httpErr('Invalid location.', 422);
         }
 
-        // Find nearest station
-        const { data: stations, error: stErr } = await sb.from('stations').select('city,lat,lng');
-        if (stErr) throw httpErr(stErr.message, 500);
-
-        let best = 'Unknown';
-        let bd = 1e9;
-        (stations || []).forEach((st) => {
-          const km = this.dist(lat, lng, Number(st.lat), Number(st.lng));
-          if (km < bd) { bd = km; best = st.city; }
-        });
-
-        // Generate ERU-XXXXXX reference
-        const bytes = new Uint8Array(3);
-        crypto.getRandomValues(bytes);
-        const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('').toUpperCase();
-        const ref = 'ERU-' + hex;
-
-        const { error: insErr } = await sb.from('incidents').insert([{
+        const ref = this.genRef();
+        const best = this.nearestCity(lat, lng);
+        const row = {
           ref,
           name,
           phone,
@@ -81,10 +124,27 @@ const ERU = {
           lng,
           accuracy: body.acc != null && Number.isFinite(Number(body.acc)) ? Number(body.acc) : null,
           city: best,
-        }]);
-        if (insErr) throw httpErr(insErr.message, 500);
+        };
 
-        return { ok: true, ref, city: best };
+        // If offline, queue locally and auto-send when connection returns
+        if (!navigator.onLine) {
+          const q = this.getOutbox();
+          q.push({ row, ts: Date.now() });
+          this.saveOutbox(q);
+          return { ok: true, ref, city: `${best} (Saved offline — will auto-send when back online)` };
+        }
+
+        try {
+          const { error: insErr } = await sb.from('incidents').insert([row]);
+          if (insErr) throw insErr;
+          return { ok: true, ref, city: best };
+        } catch {
+          // Network dropped mid-request -> save to offline outbox
+          const q = this.getOutbox();
+          q.push({ row, ts: Date.now() });
+          this.saveOutbox(q);
+          return { ok: true, ref, city: `${best} (Saved offline — will auto-send when back online)` };
+        }
       }
 
       if (a === 'track') {
@@ -93,27 +153,50 @@ const ERU = {
           .filter((r) => typeof r === 'string' && /^ERU-[A-F0-9]{6}$/.test(r));
         if (!refs.length) return { items: [] };
 
-        const { data, error } = await sb
-          .from('incidents')
-          .select('ref,type,status,created_at')
-          .in('ref', refs)
-          .order('created_at', { ascending: false });
-        if (error) throw httpErr(error.message, 500);
+        // Include any reports still waiting in the offline outbox
+        const offlineItems = this.getOutbox()
+          .filter((q) => refs.includes(q.row.ref))
+          .map((q) => ({
+            ref: q.row.ref,
+            type: q.row.type,
+            status: 'pending',
+            ts: q.ts,
+          }));
 
-        return {
-          items: (data || []).map((r) => ({
+        try {
+          const { data, error } = await sb
+            .from('incidents')
+            .select('ref,type,status,created_at')
+            .in('ref', refs)
+            .order('created_at', { ascending: false });
+          if (error) throw error;
+
+          const onlineItems = (data || []).map((r) => ({
             ref: r.ref,
             type: r.type,
             status: r.status,
             ts: new Date(r.created_at).getTime(),
-          })),
-        };
+          }));
+          const seen = new Set(onlineItems.map((x) => x.ref));
+          const merged = [...offlineItems.filter((x) => !seen.has(x.ref)), ...onlineItems];
+          localStorage.setItem('eru_myreports_cache', JSON.stringify(merged));
+          return { items: merged };
+        } catch {
+          try {
+            const cached = JSON.parse(localStorage.getItem('eru_myreports_cache') || '[]');
+            const seen = new Set(cached.map((x) => x.ref));
+            return { items: [...offlineItems.filter((x) => !seen.has(x.ref)), ...cached] };
+          } catch {
+            return { items: offlineItems };
+          }
+        }
       }
     }
 
     /* ================= ADMIN ACTIONS ================= */
     if (file === 'admin') {
       if (a === 'login') {
+        if (!navigator.onLine) throw httpErr('You are offline. Connect to the internet to sign in.', 503);
         const rawUser = String(body.u || '').trim();
         const email = rawUser.includes('@') ? rawUser : `${rawUser.toLowerCase()}@eru.local`;
         const { error } = await sb.auth.signInWithPassword({
@@ -134,11 +217,15 @@ const ERU = {
         return { ok: true };
       }
 
-      // Require active admin session for data, assign, and resolve
       const { data: sessData } = await sb.auth.getSession();
       if (!sessData?.session) throw httpErr('Session expired. Please log in.', 401);
 
       if (a === 'data') {
+        if (!navigator.onLine) {
+          const cached = localStorage.getItem(ADMIN_CACHE_KEY);
+          if (cached) return JSON.parse(cached);
+        }
+
         const [stRes, unRes, incRes, asgRes] = await Promise.all([
           sb.from('stations').select('id,city,name,lat,lng').order('id'),
           sb.from('units').select('id,station_id,type,name,status').order('id'),
@@ -146,18 +233,15 @@ const ERU = {
           sb.from('assignments').select('incident_id,unit_id'),
         ]);
         if (stRes.error || unRes.error || incRes.error || asgRes.error) {
+          const cached = localStorage.getItem(ADMIN_CACHE_KEY);
+          if (cached) return JSON.parse(cached);
           throw httpErr('Failed to load dashboard data.', 500);
         }
 
         const stMap = {};
         stRes.data.forEach((r) => {
           stMap[r.id] = {
-            id: r.id,
-            city: r.city,
-            name: r.name,
-            lat: Number(r.lat),
-            lng: Number(r.lng),
-            units: [],
+            id: r.id, city: r.city, name: r.name, lat: Number(r.lat), lng: Number(r.lng), units: [],
           };
         });
 
@@ -165,12 +249,7 @@ const ERU = {
         unRes.data.forEach((u) => {
           unitLookup[u.id] = u;
           if (stMap[u.station_id]) {
-            stMap[u.station_id].units.push({
-              id: u.id,
-              type: u.type,
-              name: u.name,
-              status: u.status,
-            });
+            stMap[u.station_id].units.push({ id: u.id, type: u.type, name: u.name, status: u.status });
           }
         });
 
@@ -198,18 +277,17 @@ const ERU = {
           const u = unitLookup[asg.unit_id];
           const st = u ? stMap[u.station_id] : null;
           if (inc && u && st) {
-            inc.assigned.push({
-              unitId: u.id,
-              stId: st.id,
-              label: `${st.city}: ${u.name}`,
-            });
+            inc.assigned.push({ unitId: u.id, stId: st.id, label: `${st.city}: ${u.name}` });
           }
         });
 
-        return { inc: Object.values(incMap), st: Object.values(stMap) };
+        const payload = { inc: Object.values(incMap), st: Object.values(stMap) };
+        localStorage.setItem(ADMIN_CACHE_KEY, JSON.stringify(payload));
+        return payload;
       }
 
       if (a === 'assign') {
+        if (!navigator.onLine) throw httpErr('Cannot dispatch units while offline.', 503);
         const incId = Number(body.incident || 0);
         const unitId = String(body.unit || '');
 
@@ -235,6 +313,7 @@ const ERU = {
       }
 
       if (a === 'resolve') {
+        if (!navigator.onLine) throw httpErr('Cannot resolve incidents while offline.', 503);
         const incId = Number(body.incident || 0);
         const { data: inc } = await sb.from('incidents').select('status').eq('id', incId).single();
         if (!inc) throw httpErr('Incident not found', 404);
@@ -262,7 +341,6 @@ const ERU = {
   incidents()      { return this.cache.inc; },
   stations()       { return this.cache.st; },
 
-  /* ---------- Text safety ---------- */
   esc(s) {
     const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
     return String(s ?? '').replace(/[&<>"']/g, (c) => map[c]);
@@ -271,7 +349,6 @@ const ERU = {
     return String(s || '').replace(/[<>]/g, '').trim().slice(0, max);
   },
 
-  /* ---------- Distance (km) between two GPS points ---------- */
   dist(lat1, lng1, lat2, lng2) {
     const rad = (x) => x * Math.PI / 180;
     const h = Math.sin(rad(lat2 - lat1) / 2) ** 2
@@ -279,14 +356,12 @@ const ERU = {
     return 2 * 6371 * Math.asin(Math.sqrt(h));
   },
 
-  /* ---------- Date / time formatting ---------- */
   fmtDate(t) { return new Date(t).toLocaleDateString('en-PH', { year: 'numeric', month: 'short', day: '2-digit' }); },
   fmtTime(t) { return new Date(t).toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit' }); },
 };
 
-const E = ERU.esc;   // shortcut used in templates:  ${E(value)}
+const E = ERU.esc;
 
-/* Tabs: buttons with class "tab" + data-t="<section id>" show/hide sections with class "sec" */
 function initTabs(onSelect) {
   const ids = [...$$('.tab')].map((t) => t.dataset.t);
   $$('.tab').forEach((btn) => btn.addEventListener('click', () => {
@@ -296,3 +371,26 @@ function initTabs(onSelect) {
     onSelect(btn);
   }));
 }
+
+/* Register Service Worker + Live Online/Offline Status Sync */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
+
+function updateNetworkStatus() {
+  const online = navigator.onLine;
+  $$('.sos .badge').forEach((b) => {
+    if (b.textContent.includes('Dispatch')) {
+      b.innerHTML = online
+        ? '<i class="dot"></i> Dispatch online'
+        : '<i class="dot" style="background:#f59e0b"></i> Offline mode (auto-sync)';
+    }
+  });
+  if (online) ERU.syncOutbox();
+}
+
+window.addEventListener('online', updateNetworkStatus);
+window.addEventListener('offline', updateNetworkStatus);
+window.addEventListener('DOMContentLoaded', updateNetworkStatus);
