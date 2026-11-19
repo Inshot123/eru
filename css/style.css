@@ -16,6 +16,7 @@
    14. ADMIN > RESPONDERS (station cards, ring, unit tiles)
    15. MAP PIN + CEBU BUTTON
    16. FULL RESPONSIVE FIT (MOBILE, TABLET, ULTRAWIDE)
+   17. CENTERED GLASSMORPHISM ALERT MODAL
    ===================================================================== */
 
 /* ===== 1. THEME VARIABLES  (change colors / roundness here) ===== */
@@ -1155,4 +1156,71 @@ tbody tr:hover,tr:hover td {
   .types .tcard:last-child:nth-child(odd) {
     grid-column: span 1;
   }
+}
+
+/* ===== 17. CENTERED GLASSMORPHISM ALERT MODAL ===== */
+
+.eru-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(4, 8, 18, 0.72);
+  backdrop-filter: blur(8px);
+  animation: eruFadeIn 0.2s ease;
+}
+
+.eru-modal {
+  width: min(420px, 100%);
+  background: linear-gradient(160deg, rgba(22, 34, 64, 0.96), rgba(11, 18, 36, 0.98));
+  border: 1px solid rgba(255, 71, 87, 0.4);
+  border-radius: 20px;
+  padding: 26px 24px 22px;
+  text-align: center;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.65), 0 0 36px rgba(255, 71, 87, 0.18);
+  animation: eruPopIn 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.eru-modal-icon {
+  width: 54px;
+  height: 54px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+  background: rgba(255, 71, 87, 0.16);
+  border: 1px solid rgba(255, 71, 87, 0.38);
+  box-shadow: 0 0 22px rgba(255, 71, 87, 0.25);
+}
+
+.eru-modal h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--tx);
+}
+
+.eru-modal p {
+  margin: 0 0 20px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--mut);
+}
+
+.eru-modal .btn {
+  min-width: 130px;
+  padding: 11px 22px;
+}
+
+@keyframes eruFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes eruPopIn {
+  from { opacity: 0; transform: scale(0.92) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
 }
