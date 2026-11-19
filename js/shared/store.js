@@ -7,7 +7,7 @@
      initTabs()    tab switching (citizen top tabs / admin sidebar)
    ===================================================================== */
 const SUPABASE_URL = 'https://xyufphigdtpupksijwww.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_UVAjz127wAxrtQ0v0dzxdg_e-n6apkf';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5dWZwaGlnZHRwdXBrc2lqd3d3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUwMjgwOTYsImV4cCI6MjExMDYwNDA5Nn0.cvMlGQTf6g2lNcczd2mAVTmmbpz-ihAD5wNycmLkomo';
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const $  = (selector) => document.querySelector(selector);
