@@ -1,6 +1,6 @@
 'use strict';
 /* =====================================================================
-   SHARED HELPERS  (Online Supabase + Offline Outbox & Cache Support)
+   SHARED HELPERS  (Online Supabase + Offline Outbox + Centered Modal)
    ===================================================================== */
 const SUPABASE_URL = 'https://xyufphigdtpupksijwww.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5dWZwaGlnZHRwdXBrc2lqd3d3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUwMjgwOTYsImV4cCI6MjExMDYwNDA5Nn0.cvMlGQTf6g2lNcczd2mAVTmmbpz-ihAD5wNycmLkomo';
@@ -126,7 +126,6 @@ const ERU = {
           city: best,
         };
 
-        // If offline, queue locally and auto-send when connection returns
         if (!navigator.onLine) {
           const q = this.getOutbox();
           q.push({ row, ts: Date.now() });
@@ -139,7 +138,6 @@ const ERU = {
           if (insErr) throw insErr;
           return { ok: true, ref, city: best };
         } catch {
-          // Network dropped mid-request -> save to offline outbox
           const q = this.getOutbox();
           q.push({ row, ts: Date.now() });
           this.saveOutbox(q);
@@ -153,7 +151,6 @@ const ERU = {
           .filter((r) => typeof r === 'string' && /^ERU-[A-F0-9]{6}$/.test(r));
         if (!refs.length) return { items: [] };
 
-        // Include any reports still waiting in the offline outbox
         const offlineItems = this.getOutbox()
           .filter((q) => refs.includes(q.row.ref))
           .map((q) => ({
@@ -394,3 +391,44 @@ function updateNetworkStatus() {
 window.addEventListener('online', updateNetworkStatus);
 window.addEventListener('offline', updateNetworkStatus);
 window.addEventListener('DOMContentLoaded', updateNetworkStatus);
+
+/* ===== CENTERED CUSTOM ALERT MODAL ===== */
+ERU.alert = function (message, title = 'Dispatch Notice', icon = '⚠️') {
+  return new Promise((resolve) => {
+    const existing = document.querySelector('.eru-modal-backdrop');
+    if (existing) existing.remove();
+
+    const backdrop = document.createElement('div');
+    backdrop.className = 'eru-modal-backdrop';
+    backdrop.innerHTML = `
+      <div class="eru-modal" role="alertdialog" aria-modal="true">
+        <div class="eru-modal-icon">${icon}</div>
+        <h3>${E(title)}</h3>
+        <p>${E(message)}</p>
+        <button type="button" class="btn red" id="eruModalOk">OK</button>
+      </div>
+    `;
+
+    const close = () => {
+      document.removeEventListener('keydown', onKey);
+      backdrop.remove();
+      resolve();
+    };
+
+    const onKey = (e) => {
+      if (e.key === 'Escape' || e.key === 'Enter') close();
+    };
+
+    backdrop.addEventListener('click', (e) => {
+      if (e.target === backdrop) close();
+    });
+    document.addEventListener('keydown', onKey);
+    document.body.appendChild(backdrop);
+
+    const okBtn = backdrop.querySelector('#eruModalOk');
+    okBtn.onclick = close;
+    okBtn.focus();
+  });
+};
+
+window.alert = (msg) => { ERU.alert(msg); };
