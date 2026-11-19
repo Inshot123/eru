@@ -15,6 +15,7 @@
    13. PRINT LAYOUT (reports)
    14. ADMIN > RESPONDERS (station cards, ring, unit tiles)
    15. MAP PIN + CEBU BUTTON
+   16. FULL RESPONSIVE FIT (MOBILE, TABLET, ULTRAWIDE)
    ===================================================================== */
 
 /* ===== 1. THEME VARIABLES  (change colors / roundness here) ===== */
@@ -1046,4 +1047,112 @@ tbody tr:hover,tr:hover td {
 
 .cebu:hover {
   background:#f1f5ff;
+}
+
+/* ===== 16. FULL RESPONSIVE FIT (MOBILE, TABLET, ULTRAWIDE) ===== */
+
+@media (max-width: 768px) {
+  .hdr {
+    padding: 10px 14px;
+    gap: 10px;
+  }
+  .brand {
+    font-size: 14px;
+  }
+  .brand small {
+    font-size: 11px;
+  }
+  .logo {
+    width: 38px;
+    height: 38px;
+  }
+  .tabs {
+    order: 3;
+    width: 100%;
+    justify-content: stretch;
+  }
+  .tabs .tab {
+    flex: 1;
+    text-align: center;
+    padding: 9px 10px;
+    font-size: 13px;
+  }
+  .sos {
+    margin-left: auto;
+    gap: 6px;
+  }
+  .sos .badge {
+    padding: 5px 10px;
+    font-size: 11.5px;
+  }
+  main {
+    padding: 14px 12px;
+  }
+  .hero {
+    padding: 20px 16px;
+  }
+  .hero h1 {
+    font-size: 22px;
+  }
+  .hero p {
+    font-size: 13.5px;
+  }
+  .types {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .types .tcard:last-child:nth-child(odd) {
+    grid-column: span 2;
+  }
+  .card {
+    padding: 16px 14px;
+  }
+  .row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .row .btn {
+    width: 100%;
+  }
+  #map {
+    height: 270px;
+  }
+  .chat {
+    min-height: 440px;
+    height: auto;
+  }
+  .chat form .row {
+    flex-direction: row;
+  }
+  .chat form .row .btn {
+    width: auto;
+  }
+  .top {
+    padding: 14px 16px;
+  }
+  .top h1 {
+    font-size: 19px;
+  }
+  .units {
+    grid-template-columns: 1fr;
+  }
+  .ulist {
+    grid-template-columns: 1fr;
+  }
+  .brow {
+    grid-template-columns: 110px 1fr 32px;
+    font-size: 12.5px;
+  }
+}
+
+@media (max-width: 380px) {
+  .sos .badge:first-child {
+    display: none;
+  }
+  .types {
+    grid-template-columns: 1fr;
+  }
+  .types .tcard:last-child:nth-child(odd) {
+    grid-column: span 1;
+  }
 }
