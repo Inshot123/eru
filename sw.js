@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eru-offline-v1';
+const CACHE_NAME = 'eru-offline-v2';
 const ASSETS = [
   './',
   './index.html',
