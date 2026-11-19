@@ -1,0 +1,21 @@
+{
+  "name": "Emergency Response Unit (ERU)",
+  "short_name": "ERU Dispatch",
+  "description": "Emergency reporting and dispatch for Mandaue, Liloan, and Consolacion",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#070d1a",
+  "theme_color": "#070d1a",
+  "icons": [
+    {
+      "src": "img/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "img/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
